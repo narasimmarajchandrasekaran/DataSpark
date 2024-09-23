@@ -23,3 +23,4 @@
 
 *Future Work:*
 "Future steps could involve customer segmentation and predictive modeling to enhance marketing strategies."
+![Screenshot 2024-09-23 094809](https://github.com/user-attachments/assets/e124e69a-7d5b-4fe6-bcd8-3e912f9d82dd)
