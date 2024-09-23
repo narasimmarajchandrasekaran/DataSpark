@@ -1,0 +1,188 @@
+1.SELECT count(gender),gender FROM project2.customer group by gender;
+
+2 .USE PROJECT2;
+SELECT
+  MONTHNAME(s.order_date) AS month,
+  ROUND(SUM(p.Unit_Price_USD * s.Quantity), 2) AS total_revenue_USD
+FROM
+  sales s
+JOIN
+  products p ON s.ProductKey = p.ProductKey  -- Adjust the join condition based on your schema
+GROUP BY
+  MONTH(s.order_date), MONTHNAME(s.order_date)  -- Group by month for correct aggregation
+ORDER BY
+  MONTH(s.order_date);  -- Order results by month 
+
+3.  use project2;
+SELECT
+  p.product_name,
+  SUM(s.quantity) AS total_quantity
+FROM
+  sales s
+JOIN
+  products p ON s.ProductKey = p.ProductKey  -- Adjust the join condition based on your schema
+GROUP BY
+  p.product_name
+ORDER BY
+  total_quantity DESC
+LIMIT 10;
+
+4. USE project2;
+
+SELECT
+  st.storekey,
+  ROUND(SUM(p.unit_price_usd * s.quantity), 2) AS total_revenue_USD
+FROM
+  sales s
+JOIN
+  products p ON s.ProductKey = p.ProductKey  -- Adjust the join condition based on your schema
+JOIN
+  stores st ON s.StoreKey = st.StoreKey      -- Adjust the join condition based on your schema
+GROUP BY
+  st.storekey
+ORDER BY
+  total_revenue_USD DESC;
+
+5. USE project2;
+
+SELECT
+    p.category,
+    p.subcategory,
+    c.name,  -- Changed to c.name
+    ROUND(SUM(p.unit_price_usd * s.quantity), 2) AS total_sales
+FROM
+    products p
+JOIN
+    sales s ON p.productkey = s.productkey
+JOIN
+    customer c ON s.customerkey = c.customerkey
+GROUP BY
+    p.category,
+    p.subcategory,
+    c.name  -- Changed to c.name
+ORDER BY
+    total_sales DESC;
+
+6. USE project2;
+
+SELECT
+    p.product_name,  -- Use the correct column name for product
+    SUM(s.quantity) AS Quantity
+FROM
+    products p
+JOIN
+    sales s ON p.productkey = s.productkey
+GROUP BY
+    p.product_name
+ORDER BY
+    Quantity DESC
+LIMIT 10;
+
+7. USE project2;
+
+SELECT
+    CASE
+        WHEN st.square_meters < 250 THEN '<250'
+        WHEN st.square_meters BETWEEN 250 AND 500 THEN '250 to 500'
+        WHEN st.square_meters BETWEEN 501 AND 750 THEN '500 to 750'
+        WHEN st.square_meters BETWEEN 751 AND 1000 THEN '750 to 1000'
+        WHEN st.square_meters BETWEEN 1001 AND 1250 THEN '1000 to 1250'
+        WHEN st.square_meters BETWEEN 1251 AND 1500 THEN '1250 to 1500'
+        WHEN st.square_meters BETWEEN 1501 AND 1750 THEN '1500 to 1750'
+        WHEN st.square_meters BETWEEN 1751 AND 2000 THEN '1750 to 2000'
+        WHEN st.square_meters > 2000 THEN '> 2000'
+    END AS size_bucket,
+    ROUND(SUM(p.unit_price_usd * s.quantity), 2) AS total_sales
+FROM
+    sales s
+JOIN
+    products p ON s.productkey = p.productkey  -- Adjust based on your schema
+JOIN
+    stores st ON s.storekey = st.storekey  -- Ensure you have the right key to join store
+GROUP BY
+    size_bucket
+ORDER BY
+    CASE
+        WHEN size_bucket = '<250' THEN 1
+        WHEN size_bucket = '250 to 500' THEN 2
+        WHEN size_bucket = '500 to 750' THEN 3
+        WHEN size_bucket = '750 to 1000' THEN 4
+        WHEN size_bucket = '1000 to 1250' THEN 5
+        WHEN size_bucket = '1250 to 1500' THEN 6
+        WHEN size_bucket = '1500 to 1750' THEN 7
+        WHEN size_bucket = '1750 to 2000' THEN 8
+        WHEN size_bucket = '> 2000' THEN 9
+    END;
+
+8. USE project2;
+
+SELECT
+    CASE
+        WHEN YEAR(CURDATE()) - YEAR(st.open_date) <= 5 THEN '<=5'
+        WHEN YEAR(CURDATE()) - YEAR(st.open_date) BETWEEN 6 AND 10 THEN '5 to 10'
+        WHEN YEAR(CURDATE()) - YEAR(st.open_date) BETWEEN 11 AND 15 THEN '10 to 15'
+        WHEN YEAR(CURDATE()) - YEAR(st.open_date) BETWEEN 16 AND 20 THEN '15 to 20'
+        ELSE '>20'  -- Optional to handle stores older than 20 years
+    END AS store_age_bucket,
+    ROUND(SUM(p.unit_price_usd * s.quantity), 2) AS total_sales
+FROM
+    sales s
+JOIN
+    products p ON s.productkey = p.productkey  -- Adjust based on your schema
+JOIN
+    stores st ON s.storekey = st.storekey  -- Ensure the join key is correct
+GROUP BY
+    store_age_bucket
+ORDER BY
+    store_age_bucket;
+9    USE project2;
+
+SELECT
+    st.storekey,
+    st.Country,
+    st.State,
+    c.customerkey,  
+    c.name,  
+    ROUND(SUM(p.unit_price_usd * s.quantity), 2) AS total_revenue_USD
+FROM
+    sales s
+JOIN
+    products p ON s.productkey = p.productkey  
+JOIN
+    stores st ON s.storekey = st.storekey      
+JOIN
+    customer c ON s.customerkey = c.customerkey  
+GROUP BY
+    st.storekey, st.Country, st.State, c.customerkey, c.name
+ORDER BY
+    total_revenue_USD DESC;
+
+9. USE project2;
+
+SELECT 
+    p.product_name,
+    COUNT(s.productkey) AS frequency
+FROM 
+    sales s
+JOIN 
+    products p ON s.productkey = p.productkey  -- Adjust if needed based on your schema
+GROUP BY 
+    p.product_name
+ORDER BY 
+    frequency DESC
+LIMIT 10;  -- Adjust this number to get more or fewer results
+
+10. USE project2;
+
+SELECT 
+    p.product_name,
+    COUNT(s.productkey) AS frequency
+FROM 
+    sales s
+JOIN 
+    products p ON s.productkey = p.productkey  -- Adjust if needed based on your schema
+GROUP BY 
+    p.product_name
+ORDER BY 
+    frequency ASC  -- Order by frequency in ascending order
+LIMIT 10;  -- Adjust this number to get more or fewer results
